@@ -59,5 +59,31 @@ int main(int argc,char*argv[])
     epollAdd(epfd, sockfd);
     epollAdd(epfd, exitPipe[0]);
 
+    //IO multiplexing
+    struct epoll_event readySet[10];
+    int readyNum = 0;
+    int i4_ret = SERVER_ROK;
+    while(1) {
+        //a timeout of -1 causes epoll_wait() to block indefinitely, 0 cause return immediately
+        readyNum = 0;
+        readyNum = epoll_wait(epfd, readySet, SIZE(readySet), EPOLL_WAIT_BLOCK_INDEFINITE);
+        NETDISK_LOG_DEBUG(readyNum, -1, "epoll_wait");
+
+        for(int i = 0; i < readyNum; ++i) {
+            //new connect coming
+            if(readySet[i].data.fd == sockfd) {
+                int netfd = accept(sockfd, NULL, NULL);
+                NETDISK_LOG_DEBUG(netfd, -1, "accept");
+                pthread_mutex_lock(&threadPool.taskQueue.mutex);
+                i4_ret = enQueue(&threadPool.taskQueue, netfd);
+                NETDISK_LOG_DEBUG(i4_ret, SERVER_RERR_ON_CLIB, "enQueue");
+                printf("main send a new task!\n");
+                pthread_cond_broadcast(&threadPool.taskQueue.cond);
+                //let worker thread to contend the mutex
+                pthread_mutex_unlock(&threadPool.taskQueue.mutex);
+            }
+        }
+    }
+
     return 0;
 }

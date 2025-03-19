@@ -86,6 +86,8 @@ typedef struct threadPool_s{
 
 //API
 int initQueue(TaskQueue *ptaskQueue);
+int enQueue(TaskQueue *ptaskQueue, int netfd);
+int deQueue(TaskQueue *ptaskQueue);
 int initThreadPool(ThreadPool *pthreadPool, int workerNum);
 int makeWorker(ThreadPool *pthreadPool);
 void *threadFunc(void *arg);
