@@ -14,9 +14,12 @@
 #define SERVER_RERR_ON_CLIB -2
 
 //server default cfg
+#define USER_NAME_MAX_LEN 100
 #define USER_MAX_COUNT 100
 #define PENDING_CONNECT_MAX_NUM 10
-
+#define SMALL_TRAIN_SIZE 2000
+#define ENCRYPTED_PWD_MAX_LEN 256
+#define CMD_MAX_LEN 10
 
 #define NETDISK_CHECK_NULL(ret) {                                                                              \
     if(NULL == ret) {                                                                                          \
@@ -26,8 +29,8 @@
 }
 
 #define NETDISK_LOG_ERROR(retval, val) {                                  \
-    if(retval != SERVER_ROK) {                                            \
-        syslog(LOG_ERR, "[%s ERROR:%s] line = %d file = %s func = %s\n",  \
+    if(retval == val) {                                            \
+        syslog(LOG_ERR, "[ERROR:%s] line = %d file = %s func = %s\n",  \
             strerror(errno), __LINE__, __FILE__, __FUNCTION__);           \
     }                                                                     \
 }
@@ -38,6 +41,26 @@
             msg, strerror(errno), __LINE__, __FILE__, __FUNCTION__);      \
     }                                                                     \
 }
+
+#define NETDISK_LOG_INFO(useName, action) {                         \
+    syslog(LOG_INFO, "clinet username: %s Action: %s\n",useName, action); \
+}
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+    //may be need used
+
+#ifdef __cplusplus
+}
+#endif
+
+//small train
+typedef struct train_s{
+    int length;            //train head, record carriage length
+    char data[SMALL_TRAIN_SIZE];       //carriage
+}Train;
 
 //task node
 typedef struct task_s{
@@ -93,4 +116,7 @@ int makeWorker(ThreadPool *pthreadPool);
 void *threadFunc(void *arg);
 int tcpInit(const char *ip, const char *port, int *psocket);
 int epollAdd(int epfd, int fd);
+int serverLogin(int netfd, ThreadPool * threadpool, char * usrName);
+int stackPush(Stack *pstack, const char *buf);
+int stackPop(Stack *pstack);
 #endif

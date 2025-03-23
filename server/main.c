@@ -66,6 +66,7 @@ int main(int argc,char*argv[])
     while(1) {
         //a timeout of -1 causes epoll_wait() to block indefinitely, 0 cause return immediately
         readyNum = 0;
+        printf("start wait client connect!");
         readyNum = epoll_wait(epfd, readySet, SIZE(readySet), EPOLL_WAIT_BLOCK_INDEFINITE);
         NETDISK_LOG_DEBUG(readyNum, -1, "epoll_wait");
 
