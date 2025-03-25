@@ -11,7 +11,7 @@ void get_salt(char* salt, char* password){
     strncpy(salt,password,i-1);
 }
 
-int serverLogin(int netfd, ThreadPool * threadpool, char * usrName){
+int serverLogin(int netfd, ThreadPool * threadpool, char *usrName){
     Train train;//msg format
     bzero(&train, sizeof(train));
     //record salt array
@@ -55,7 +55,7 @@ int serverLogin(int netfd, ThreadPool * threadpool, char * usrName){
     recv(netfd, &train.length, sizeof(int), MSG_WAITALL);
     recv(netfd, &train.data, train.length, 0);
     printf("client input passwd=%s\n", train.data);
-    puts(sp->sp_pwdp); //Encrypted password
+    //puts(sp->sp_pwdp); //Encrypted password
 
     //check user input pwd
     bool pwdCheckRes = false;

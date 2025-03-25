@@ -7,7 +7,7 @@ static void input_user_name(int sockfd, Train* ptrain) {
     read(STDIN_FILENO, name, USER_NAME_MAX_LEN);
     strncpy(ptrain->buf, name, strlen(name)-1);
     ptrain->length = strlen(ptrain->buf);
-    puts(ptrain->buf);
+    //puts(ptrain->buf);
     send(sockfd, ptrain, sizeof(int)+ptrain->length, MSG_NOSIGNAL);
 }
 

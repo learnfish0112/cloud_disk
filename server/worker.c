@@ -32,22 +32,28 @@ void *threadFunc(void *arg) {
         pthread_mutex_unlock(&threadpool->taskQueue.mutex);
 
         //start login
-        char usrName[USER_NAME_MAX_LEN] = {"\0"};
-        i4_ret = serverLogin(netfd, threadpool, usrName);
+        char userName[USER_NAME_MAX_LEN] = {"\0"};
+        i4_ret = serverLogin(netfd, threadpool, userName);
         if(i4_ret != SERVER_ROK)
         {
             printf("user login failed!\n");
             close(netfd);
             exit(0);
         }
-        NETDISK_LOG_INFO(usrName, "login");
+        NETDISK_LOG_INFO(userName, "login");
 
         //login success, start exec task
         int length = 0;
-        char comd[CMD_MAX_LEN] = {"\0"};
+        char comd[USER_CMD_TYPE_MAX_LEN ] = {"\0"};
         recv(netfd, &length, sizeof(int), 0);
         recv(netfd, comd, length, 0);
-        NETDISK_LOG_INFO(usrName, comd);
+        NETDISK_LOG_INFO(userName, comd);
+
+        printf("user input cmd:%s\n", comd);
+        if(strncmp(comd, "ls", 2) == 0) { 
+            printf("user input ls cmd\n");
+            ls(netfd, threadpool, userName);
+        }
     }
 
     return 0;

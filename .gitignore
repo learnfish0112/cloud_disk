@@ -52,5 +52,8 @@ Mkfile.old
 dkms.conf
 
 # User cfg
-./client/cfg.txt
-./server/cfg.txt
+/client/cfg.txt
+/server/cfg.txt
+
+#Local test
+/test/*

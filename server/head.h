@@ -8,18 +8,21 @@
 *           typedef, struct, macro
 *
 ************************************************/
-//ret value
+//Ret value
 #define SERVER_ROK 0
 #define SERVER_RERR -1
 #define SERVER_RERR_ON_CLIB -2
+#define SERVER_RINVAL_ARG -3
 
-//server default cfg
+//Server common config
 #define USER_NAME_MAX_LEN 100
 #define USER_MAX_COUNT 100
 #define PENDING_CONNECT_MAX_NUM 10
 #define SMALL_TRAIN_SIZE 2000
 #define ENCRYPTED_PWD_MAX_LEN 256
-#define CMD_MAX_LEN 10
+#define USER_CMD_TYPE_MAX_LEN 10
+#define USER_VIRTUAL_DIR_PATH_MAX_LEN 1000
+#define USER_CMD_ARGS_MAX_LEN 1000
 
 #define NETDISK_CHECK_NULL(ret) {                                                                              \
     if(NULL == ret) {                                                                                          \
@@ -79,7 +82,7 @@ typedef struct taskQueue_s{
 
 //dir Stack node
 typedef struct node_s{
-    char buf[50];          //record file or dir name
+    char buf[50];          //record dir name
     struct node_s *pnext;
 }Node;
 
@@ -116,7 +119,9 @@ int makeWorker(ThreadPool *pthreadPool);
 void *threadFunc(void *arg);
 int tcpInit(const char *ip, const char *port, int *psocket);
 int epollAdd(int epfd, int fd);
-int serverLogin(int netfd, ThreadPool * threadpool, char * usrName);
+int serverLogin(int netfd, ThreadPool * threadpool, char * userName);
 int stackPush(Stack *pstack, const char *buf);
 int stackPop(Stack *pstack);
+int getpath(char *path, char *argu, Stack* pstack);
+int ls(int netfd, ThreadPool *pthreadPool, char *userName);
 #endif

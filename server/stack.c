@@ -6,6 +6,8 @@ int stackPush(Stack *pstack, const char *buf) {
     if(newNode == NULL) {
         return SERVER_RERR_ON_CLIB;
     }
+    //record dir info
+    strcpy(newNode->buf, buf);
     newNode->pnext = pstack->fhead;
 
     if(pstack->stackSize == 0) {
