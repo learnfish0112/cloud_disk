@@ -45,14 +45,28 @@ void *threadFunc(void *arg) {
         //login success, start exec task
         int length = 0;
         char comd[USER_CMD_TYPE_MAX_LEN ] = {"\0"};
-        recv(netfd, &length, sizeof(int), 0);
-        recv(netfd, comd, length, 0);
-        NETDISK_LOG_INFO(userName, comd);
 
-        printf("user input cmd:%s\n", comd);
-        if(strncmp(comd, "ls", 2) == 0) { 
-            printf("user input ls cmd\n");
-            ls(netfd, threadpool, userName);
+        while(i4_ret == SERVER_ROK) {
+            length = 0;
+            bzero(&comd[0], sizeof(comd));
+            recv(netfd, &length, sizeof(int), 0);
+            recv(netfd, comd, length, 0);
+            NETDISK_LOG_INFO(userName, comd);
+
+            //printf("user input cmd:%s\n", comd);
+            if(strcmp(comd, "ls\0") == 0) { 
+                printf("user input ls cmd\n");
+                ls(netfd, threadpool, userName);
+            } else if(strcmp(comd, "pwd\0") == 0) {
+                printf("user input pwd cmd\n");
+                serverPwd(netfd, threadpool, userName);
+            } else if(strcmp(comd, "mkdir\0") == 0) {
+                printf("user input mkdir cmd\n");
+                //serverMkdir(netfd, threadpool, userName);
+            }
+            else {
+                break;
+            }
         }
     }
 

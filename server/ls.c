@@ -9,7 +9,7 @@ int ls(int netfd, ThreadPool *pthreadPool, char *userName) {
     int i;
     //&mutex 
     pthread_mutex_lock(&pthreadPool->taskQueue.mutex);
-    for(i = 0; i < 100; ++i) {
+    for(i = 0; i < USER_MAX_COUNT; ++i) {
         if(strcmp(pthreadPool->uesrArr[i].userName, userName) == 0) {
             break;
         }       

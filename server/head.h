@@ -124,4 +124,6 @@ int stackPush(Stack *pstack, const char *buf);
 int stackPop(Stack *pstack);
 int getpath(char *path, char *argu, Stack* pstack);
 int ls(int netfd, ThreadPool *pthreadPool, char *userName);
+int serverPwd(int netfd, ThreadPool *pthreadPool, char *userName);
+int serverMkdir(int netfd, ThreadPool *pthreadPool, char *userName);
 #endif

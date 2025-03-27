@@ -27,4 +27,5 @@
  
 int clientLogin(int sockfd);
 int ls(int sockfd, char *argus);
+int clientPwd(int sockfd);
 #endif       

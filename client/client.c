@@ -29,13 +29,15 @@ int main(int argc,char*argv[])
 
     ret = clientLogin(sockfd);
 
-    if(ret == CLIENTR_OK) {
-        char sentence[USER_CMD_MAX_LEN] = {"\0"};
+    char sentence[USER_CMD_MAX_LEN] = {"\0"};
+    char comdArgus[USER_CMD_ARG_MAX_LEN];
+    while(ret == CLIENTR_OK) {
+        bzero(sentence, sizeof(sentence));
+        bzero(comdArgus, sizeof(comdArgus));
         printf("Please input your request: \n");
         read(STDIN_FILENO, sentence, sizeof(sentence));
-        char *comd = strtok(sentence, " ");
-        char comdArgus[USER_CMD_ARG_MAX_LEN];
-        strcpy(comdArgus, sentence + (strlen(comd) + 1));//strcpy 2arg means str offset
+        char *comd = strtok(sentence, " \n");//2arg means delim set,not strict matching
+        strcpy(comdArgus, sentence + (strlen(comd) + 1));
         int argusize = strlen(comdArgus);//strlen will calculate '\n'
         comdArgus[argusize - 1] = '\0';//convert '\n' to '\0'
 
@@ -44,9 +46,15 @@ int main(int argc,char*argv[])
         strcpy(train.buf, comd);
         send(sockfd, &train, 4+train.length, 0);
 
-        if(strncmp(comd, "ls", 2) == 0) {
+        printf("Your input comd: %s, comd len = %ld\n", comd, strlen(comd));
+        if(strcmp(comd, "ls\0") == 0) {
             printf("client input ls cmd\n");
             ls(sockfd, comdArgus);
+        } else if(strcmp(comd, "pwd\0") == 0) {
+            printf("client input pwd cmd\n");
+            clientPwd(sockfd);
+        } else {
+            printf("Unknown request, please reinput\n");
         }
     }
 
