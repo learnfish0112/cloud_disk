@@ -62,7 +62,7 @@ void *threadFunc(void *arg) {
                 serverPwd(netfd, threadpool, userName);
             } else if(strcmp(comd, "mkdir\0") == 0) {
                 printf("user input mkdir cmd\n");
-                //serverMkdir(netfd, threadpool, userName);
+                serverMkdir(netfd, threadpool, userName);
             }
             else {
                 break;

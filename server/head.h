@@ -13,6 +13,7 @@
 #define SERVER_RERR -1
 #define SERVER_RERR_ON_CLIB -2
 #define SERVER_RINVAL_ARG -3
+#define SERVER_RERR_NOT_FOUND_USER -4
 
 //Server common config
 #define USER_NAME_MAX_LEN 100

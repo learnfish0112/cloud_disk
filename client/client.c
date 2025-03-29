@@ -46,13 +46,16 @@ int main(int argc,char*argv[])
         strcpy(train.buf, comd);
         send(sockfd, &train, 4+train.length, 0);
 
-        printf("Your input comd: %s, comd len = %ld\n", comd, strlen(comd));
+        //printf("Your input comd: %s, comd len = %ld\n", comd, strlen(comd));
         if(strcmp(comd, "ls\0") == 0) {
             printf("client input ls cmd\n");
             ls(sockfd, comdArgus);
         } else if(strcmp(comd, "pwd\0") == 0) {
             printf("client input pwd cmd\n");
             clientPwd(sockfd);
+        } else if(strcmp(comd, "mkdir\0") == 0) {
+            printf("client input mkdir cmd\n");
+            clientMkdir(sockfd, comdArgus);
         } else {
             printf("Unknown request, please reinput\n");
         }
