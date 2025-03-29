@@ -127,4 +127,6 @@ int getpath(char *path, char *argu, Stack* pstack);
 int ls(int netfd, ThreadPool *pthreadPool, char *userName);
 int serverPwd(int netfd, ThreadPool *pthreadPool, char *userName);
 int serverMkdir(int netfd, ThreadPool *pthreadPool, char *userName);
+int serverRmdir(int netfd, ThreadPool *pthreadPool, char *userName);
+int serverCheckCmdExecStatus(int netfd, int ret);
 #endif

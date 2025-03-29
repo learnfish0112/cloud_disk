@@ -1,6 +1,6 @@
 #include "head.h"
 
-int serverMkdir(int netfd, ThreadPool * threadpool, char* userName){
+int serverHandleUserRelativePath(int netfd, ThreadPool *threadpool, char *userName, char *path, char *absolutePath) {
     //find user idx
     int i;                                                                                                                      
     for(i = 0; i < USER_MAX_COUNT; ++i) {
@@ -23,28 +23,50 @@ int serverMkdir(int netfd, ThreadPool * threadpool, char* userName){
 
     //accept client relative path
     Train train;
-    char path[USER_VIRTUAL_DIR_PATH_MAX_LEN] = {"\0"};
     recv(netfd, &train.length, sizeof(int), 0);
     recv(netfd, path, train.length, 0);
 
-    char absolutePath[USER_VIRTUAL_DIR_PATH_MAX_LEN] = {"\0"};
 
     pthread_mutex_lock(&threadpool->taskQueue.mutex);
     getpath(absolutePath, path, &threadpool->uesrArr[i].direcStack);
     pthread_mutex_unlock(&threadpool->taskQueue.mutex);
 
+    return SERVER_ROK;
+}
+
+int serverMkdir(int netfd, ThreadPool * threadpool, char* userName){
+    char path[USER_VIRTUAL_DIR_PATH_MAX_LEN] = {"\0"};
+    char absolutePath[USER_VIRTUAL_DIR_PATH_MAX_LEN] = {"\0"};
+    int ret = SERVER_ROK; 
+    
+    ret = serverHandleUserRelativePath(netfd, threadpool, userName, path, absolutePath); 
+    if(ret != SERVER_ROK) {
+        return SERVER_RERR;
+    }
+
     umask(0000);
-    int ret = mkdir(absolutePath, 0777);
+    ret = mkdir(absolutePath, 0777);
     NETDISK_LOG_DEBUG(ret, -1, "mkdir in serverMkdir");
 
-    if(ret == 0) {
-        Train train;
-        bzero(&train, sizeof(train));
-        char *msg = "ok";
-        strncpy(train.data, msg, strlen(msg));
-        train.length = strlen(train.data);
-        send(netfd, &train, 4 + train.length, MSG_NOSIGNAL);
-    }
+    serverCheckCmdExecStatus(netfd, ret);
 
     return SERVER_ROK;
 }
+
+int serverRmdir(int netfd, ThreadPool *threadpool, char *userName) {
+    char path[USER_VIRTUAL_DIR_PATH_MAX_LEN] = {"\0"};
+    char absolutePath[USER_VIRTUAL_DIR_PATH_MAX_LEN] = {"\0"};
+    int ret = SERVER_ROK;
+
+    serverHandleUserRelativePath(netfd, threadpool, userName, path, absolutePath); 
+    if(ret != SERVER_ROK) {
+        return SERVER_RERR;
+    }
+
+    ret = rmdir(absolutePath);
+
+    serverCheckCmdExecStatus(netfd, ret);
+
+    return SERVER_ROK;
+}
+

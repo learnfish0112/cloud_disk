@@ -56,7 +56,11 @@ int main(int argc,char*argv[])
         } else if(strcmp(comd, "mkdir\0") == 0) {
             printf("client input mkdir cmd\n");
             clientMkdir(sockfd, comdArgus);
-        } else {
+        } else if(strcmp(comd, "rmdir\0") == 0) {
+            printf("client input rmdir cmd\n");
+            clientRmdir(sockfd, comdArgus);
+        } 
+        else {
             printf("Unknown request, please reinput\n");
         }
     }
