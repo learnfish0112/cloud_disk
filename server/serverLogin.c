@@ -41,7 +41,7 @@ int serverLogin(int netfd, ThreadPool * threadpool, char *usrName){
     //user exist, record
     //multi-thread, exist new cover old problem
     pthread_mutex_lock(&threadpool->taskQueue.mutex);
-    strcpy(threadpool->uesrArr[threadpool->currIndex].userName, train.data);
+    strcpy(threadpool->userArr[threadpool->currIndex].userName, train.data);
     pthread_mutex_unlock(&threadpool->taskQueue.mutex);
 
     get_salt(salt, sp->sp_pwdp);
@@ -71,17 +71,17 @@ int serverLogin(int netfd, ThreadPool * threadpool, char *usrName){
     send(netfd, &pwdCheckRes, sizeof(bool), MSG_NOSIGNAL);
 
     pthread_mutex_lock(&threadpool->taskQueue.mutex);
-    strcpy(threadpool->uesrArr[threadpool->currIndex].encrypted, train.data);
-    strcpy(usrName, threadpool->uesrArr[threadpool->currIndex].userName);//将正确的用户信息存入worker里面的usrName
+    strcpy(threadpool->userArr[threadpool->currIndex].encrypted, train.data);
+    strcpy(usrName, threadpool->userArr[threadpool->currIndex].userName);//将正确的用户信息存入worker里面的usrName
     pthread_mutex_unlock(&threadpool->taskQueue.mutex);
 
     //check user dir exist
-    if(access(threadpool->uesrArr[threadpool->currIndex].userName, F_OK) == 0){
+    if(access(threadpool->userArr[threadpool->currIndex].userName, F_OK) == 0){
         //exist
         pthread_mutex_lock(&threadpool->taskQueue.mutex);
-        if(threadpool->uesrArr[threadpool->currIndex].direcStack.stackSize == 0) {
+        if(threadpool->userArr[threadpool->currIndex].direcStack.stackSize == 0) {
             //push dir into stack
-            stackPush(&threadpool->uesrArr[threadpool->currIndex].direcStack, threadpool->uesrArr[threadpool->currIndex].userName);
+            stackPush(&threadpool->userArr[threadpool->currIndex].direcStack, threadpool->userArr[threadpool->currIndex].userName);
         }
         pthread_mutex_unlock(&threadpool->taskQueue.mutex);
 
@@ -96,7 +96,7 @@ int serverLogin(int netfd, ThreadPool * threadpool, char *usrName){
             pthread_mutex_unlock(&threadpool->taskQueue.mutex);
             return SERVER_RERR;
         }
-        stackPush(&threadpool->uesrArr[threadpool->currIndex].direcStack, threadpool->uesrArr[threadpool->currIndex].userName);
+        stackPush(&threadpool->userArr[threadpool->currIndex].direcStack, threadpool->userArr[threadpool->currIndex].userName);
         pthread_mutex_unlock(&threadpool->taskQueue.mutex);
     }
 

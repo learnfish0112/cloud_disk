@@ -21,5 +21,19 @@ int stackPush(Stack *pstack, const char *buf) {
 }
 
 int stackPop(Stack *pstack) {
+    if(pstack->stackSize == 0) {
+        return SERVER_ROK;
+    }
+
+    Node* temp = pstack->fhead;
+    pstack->fhead = pstack->fhead->pnext;
+    free(temp);
+
+    pstack->stackSize--;
+
+    if(pstack->stackSize == 0) {
+        printf("user in home dir now\n");
+        pstack->fhead = pstack->ftail;
+    }
     return SERVER_ROK;
 }

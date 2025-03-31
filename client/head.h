@@ -30,4 +30,5 @@ int ls(int sockfd, char *argus);
 int clientPwd(int sockfd);
 int clientMkdir(int sockfd, char *argus);
 int clientRmdir(int sockfd, char *argus);
+int clientCd(int sockfd, char *argus);
 #endif       

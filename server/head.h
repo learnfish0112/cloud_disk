@@ -46,7 +46,7 @@
     }                                                                     \
 }
 
-#define NETDISK_LOG_INFO(useName, action) {                         \
+#define NETDISK_ACTION_PRINT(useName, action) {                         \
     syslog(LOG_INFO, "clinet username: %s Action: %s\n",useName, action); \
 }
 
@@ -107,7 +107,7 @@ typedef struct threadPool_s{
     int workerNum;         //work thread number
     TaskQueue taskQueue;   
     int exitFlag;          
-    User uesrArr[USER_MAX_COUNT];     //record user info
+    User userArr[USER_MAX_COUNT];     //record user info
     int currIndex;         
 }ThreadPool;
 
@@ -123,10 +123,10 @@ int epollAdd(int epfd, int fd);
 int serverLogin(int netfd, ThreadPool * threadpool, char * userName);
 int stackPush(Stack *pstack, const char *buf);
 int stackPop(Stack *pstack);
-int getpath(char *path, char *argu, Stack* pstack);
 int ls(int netfd, ThreadPool *pthreadPool, char *userName);
 int serverPwd(int netfd, ThreadPool *pthreadPool, char *userName);
 int serverMkdir(int netfd, ThreadPool *pthreadPool, char *userName);
 int serverRmdir(int netfd, ThreadPool *pthreadPool, char *userName);
 int serverCheckCmdExecStatus(int netfd, int ret);
+int serverCd(int netfd, ThreadPool *pthreadpool, char *userName);
 #endif

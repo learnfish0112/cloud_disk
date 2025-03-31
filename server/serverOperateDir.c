@@ -1,14 +1,15 @@
 #include "head.h"
+#include "util/util_head.h"
 
 int serverHandleUserRelativePath(int netfd, ThreadPool *threadpool, char *userName, char *path, char *absolutePath) {
     //find user idx
     int i;                                                                                                                      
     for(i = 0; i < USER_MAX_COUNT; ++i) {
         pthread_mutex_lock(&threadpool->taskQueue.mutex);
-        if(strcmp(threadpool->uesrArr[i].userName, userName) == 0) {
+        if(strcmp(threadpool->userArr[i].userName, userName) == 0) {
             pthread_mutex_unlock(&threadpool->taskQueue.mutex);
             break;
-        } else if(strcmp(threadpool->uesrArr[i].userName, userName) != 0 && i == USER_MAX_COUNT - 1) {
+        } else if(strcmp(threadpool->userArr[i].userName, userName) != 0 && i == USER_MAX_COUNT - 1) {
             pthread_mutex_unlock(&threadpool->taskQueue.mutex);
             Train train;
             bzero(&train, sizeof(train));
@@ -28,7 +29,7 @@ int serverHandleUserRelativePath(int netfd, ThreadPool *threadpool, char *userNa
 
 
     pthread_mutex_lock(&threadpool->taskQueue.mutex);
-    getpath(absolutePath, path, &threadpool->uesrArr[i].direcStack);
+    getpath(absolutePath, path, &threadpool->userArr[i].direcStack);
     pthread_mutex_unlock(&threadpool->taskQueue.mutex);
 
     return SERVER_ROK;

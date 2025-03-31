@@ -40,7 +40,7 @@ void *threadFunc(void *arg) {
             close(netfd);
             exit(0);
         }
-        NETDISK_LOG_INFO(userName, "login");
+        NETDISK_ACTION_PRINT(userName, "login");
 
         //login success, start exec task
         int length = 0;
@@ -51,7 +51,7 @@ void *threadFunc(void *arg) {
             bzero(&comd[0], sizeof(comd));
             recv(netfd, &length, sizeof(int), 0);
             recv(netfd, comd, length, 0);
-            NETDISK_LOG_INFO(userName, comd);
+            NETDISK_ACTION_PRINT(userName, comd);
 
             //printf("user input cmd:%s\n", comd);
             if(strcmp(comd, "ls\0") == 0) { 
@@ -66,7 +66,11 @@ void *threadFunc(void *arg) {
             } else if(strcmp(comd, "rmdir\0") == 0) {
                 printf("user input rmdir cmd\n");
                 serverRmdir(netfd, threadpool, userName);
-            } else {
+            } else if(strcmp(comd, "cd\0") == 0) {
+                printf("user input cd cmd\n");
+                serverCd(netfd, threadpool, userName);
+            } 
+            else {
                 break;
             }
         }

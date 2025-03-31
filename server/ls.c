@@ -1,4 +1,5 @@
 #include "head.h"
+#include "util/util_head.h"
 
 int ls(int netfd, ThreadPool *pthreadPool, char *userName) {
     if(userName == NULL || pthreadPool == NULL) {
@@ -10,7 +11,7 @@ int ls(int netfd, ThreadPool *pthreadPool, char *userName) {
     //&mutex 
     pthread_mutex_lock(&pthreadPool->taskQueue.mutex);
     for(i = 0; i < USER_MAX_COUNT; ++i) {
-        if(strcmp(pthreadPool->uesrArr[i].userName, userName) == 0) {
+        if(strcmp(pthreadPool->userArr[i].userName, userName) == 0) {
             break;
         }       
     }
@@ -29,7 +30,7 @@ int ls(int netfd, ThreadPool *pthreadPool, char *userName) {
     puts(argu);
 
     pthread_mutex_lock(&pthreadPool->taskQueue.mutex);
-    getpath(path, argu, &pthreadPool->uesrArr[i].direcStack);
+    getpath(path, argu, &pthreadPool->userArr[i].direcStack);
     pthread_mutex_unlock(&pthreadPool->taskQueue.mutex);
     puts(path);
 

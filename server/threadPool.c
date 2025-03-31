@@ -5,7 +5,7 @@ int initThreadPool(ThreadPool *pthreadPool, int workerNum) {
     pthreadPool->workerNum = workerNum;
     initQueue(&pthreadPool->taskQueue);
     pthreadPool->exitFlag = 0;
-    bzero(pthreadPool->uesrArr, sizeof(pthreadPool->uesrArr));
+    bzero(pthreadPool->userArr, sizeof(pthreadPool->userArr));
     pthreadPool->currIndex = 0;
 
     return 0;
