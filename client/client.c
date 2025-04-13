@@ -62,6 +62,12 @@ int main(int argc,char*argv[])
         } else if(strcmp(comd, "cd\0") == 0) {
             printf("client input cd pmd\n");
             clientCd(sockfd, comdArgus);
+        } else if(strcmp(comd, "gets\0") == 0) {
+            printf("client input gets pmd\n");
+            clientDownload(sockfd, comdArgus);
+        } else if(strcmp(comd, "push\0") == 0) {
+            printf("client input push pmd\n");
+            clientUpload(sockfd, comdArgus);
         } else {
             printf("Unknown request, please reinput\n");
         }

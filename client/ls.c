@@ -9,8 +9,9 @@ int ls(int sockfd, char *argus) {
     strcpy(train.buf, argus);
     send(sockfd, &train, sizeof(int)+train.length, 0);
 
-    bool flag;
+    bool flag = false;
     recv(sockfd, &flag, sizeof(bool), 0);
+    printf("client recv dir exist:%d\n", flag);
     if(flag == false) {
         printf("User input dir error\n");
         return CLIENTR_ERR;

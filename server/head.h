@@ -24,6 +24,11 @@
 #define USER_CMD_TYPE_MAX_LEN 10
 #define USER_VIRTUAL_DIR_PATH_MAX_LEN 1000
 #define USER_CMD_ARGS_MAX_LEN 1000
+#define USER_FILE_PATH_MAX_LEN 1000
+#define USER_BIG_FILE_SIZE_MIN (100 * 1024 * 1024)
+#define TRANSFILE_BUF_MAX_SIZE (2048)
+#define USER_SPACE_MAX_SIZE (5 * 1024 * 1024 * 1024)//10GB, server space is limited
+#define SERVER_RECV_FILE_BUF_SIZE (2048)
 
 #define NETDISK_CHECK_NULL(ret) {                                                                              \
     if(NULL == ret) {                                                                                          \
@@ -129,4 +134,6 @@ int serverMkdir(int netfd, ThreadPool *pthreadPool, char *userName);
 int serverRmdir(int netfd, ThreadPool *pthreadPool, char *userName);
 int serverCheckCmdExecStatus(int netfd, int ret);
 int serverCd(int netfd, ThreadPool *pthreadpool, char *userName);
+int serverTransfile(int netfd, ThreadPool *pthreadpool, char *userName);
+int serverReceiveFile(int netfd, ThreadPool *pthreadpool, char *userName);
 #endif

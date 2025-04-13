@@ -51,10 +51,14 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# User cfg
+#User cfg
 /client/cfg.txt
 /server/cfg.txt
 /server/util/*
 
+#User info
+/client/download
+
 #Local test
 /test/*
+

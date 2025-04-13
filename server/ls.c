@@ -27,22 +27,22 @@ int ls(int netfd, ThreadPool *pthreadPool, char *userName) {
     if(length != 0) {
         recv(netfd, argu, length, 0);
     } 
-    puts(argu);
 
     pthread_mutex_lock(&pthreadPool->taskQueue.mutex);
     getpath(path, argu, &pthreadPool->userArr[i].direcStack);
     pthread_mutex_unlock(&pthreadPool->taskQueue.mutex);
-    puts(path);
+    printf("user hope ls path:%s\n", path);
 
     bool flag = true;
     DIR *pdir = opendir(path);
-    NETDISK_LOG_DEBUG(pdir, NULL, "opendir");
     if(pdir == NULL) {
+        perror("open dir failed");
         flag = false;
         send(netfd, &flag, sizeof(bool), MSG_NOSIGNAL);
         return SERVER_RERR;
     }
 
+    printf("send flag = %d\n", flag);
     send(netfd, &flag, sizeof(bool), MSG_NOSIGNAL);
     struct dirent *pdirent;
     while(1) {
@@ -53,6 +53,7 @@ int ls(int netfd, ThreadPool *pthreadPool, char *userName) {
         int length = strlen(pdirent->d_name);
         send(netfd, &length, sizeof(int), MSG_NOSIGNAL);
         send(netfd, pdirent->d_name, length, MSG_NOSIGNAL);
+        puts(pdirent->d_name);
     }
     //traverse dir end
     int exit = 0;

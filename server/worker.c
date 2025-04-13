@@ -36,6 +36,7 @@ void *threadFunc(void *arg) {
         i4_ret = serverLogin(netfd, threadpool, userName);
         if(i4_ret != SERVER_ROK)
         {
+            //hope provide user 3 times mistake chance
             printf("user login failed!\n");
             close(netfd);
             exit(0);
@@ -69,8 +70,13 @@ void *threadFunc(void *arg) {
             } else if(strcmp(comd, "cd\0") == 0) {
                 printf("user input cd cmd\n");
                 serverCd(netfd, threadpool, userName);
-            } 
-            else {
+            } else if(strcmp(comd, "gets\0") == 0) {
+                printf("user input gets cmd\n");
+                serverTransfile(netfd, threadpool, userName);
+            } else if(strcmp(comd, "push\0") == 0) {
+                printf("user input push cmd\n");
+                serverReceiveFile(netfd, threadpool, userName);
+            } else {
                 break;
             }
         }

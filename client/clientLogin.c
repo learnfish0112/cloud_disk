@@ -4,8 +4,16 @@ static void input_user_name(int sockfd, Train* ptrain) {
     char name[USER_NAME_MAX_LEN] = {"\0"};
     printf("Please input username: \n");
     //fgets(train.buf, sizeof(train.buf), stdin);
-    read(STDIN_FILENO, name, USER_NAME_MAX_LEN);
-    strncpy(ptrain->buf, name, strlen(name)-1);
+    
+    //real code
+    //read(STDIN_FILENO, name, USER_NAME_MAX_LEN);
+    //strncpy(ptrain->buf, name, strlen(name)-1);
+    
+    //test code
+    strncpy(name, "tt", strlen("tt"));
+    puts(name);
+    strncpy(ptrain->buf, name, strlen(name));
+
     ptrain->length = strlen(ptrain->buf);
     //puts(ptrain->buf);
     send(sockfd, ptrain, sizeof(int)+ptrain->length, MSG_NOSIGNAL);
