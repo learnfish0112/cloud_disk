@@ -68,7 +68,7 @@ int serverReceiveFile(int netfd, ThreadPool *threadpool, char *userName) {
     bzero(&train, sizeof(train));
     struct stat clientStatbuf;
     recv(netfd, &clientStatbuf, sizeof(clientStatbuf), 0);
-    int fd = open(filePath, O_RDWR | O_CREAT);
+    int fd = open(filePath, O_CREAT | O_RDWR, 0666);
     struct stat serverStatbuf;
     fstat(fd,&serverStatbuf);
     send(netfd, &serverStatbuf, sizeof(serverStatbuf), MSG_NOSIGNAL);
