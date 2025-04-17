@@ -58,7 +58,9 @@ dkms.conf
 
 #User info
 /client/download
+/server/t
 
 #Local test
 /test/*
+/perf/*
 
