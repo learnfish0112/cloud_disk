@@ -59,8 +59,10 @@ dkms.conf
 #User info
 /client/download
 /server/t
+/server/xiaoming
 
 #Local test
 /test/*
 /perf/*
+*.svg
 

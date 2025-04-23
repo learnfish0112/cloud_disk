@@ -6,13 +6,15 @@ static void input_user_name(int sockfd, Train* ptrain) {
     //fgets(train.buf, sizeof(train.buf), stdin);
     
     //real code
-    //read(STDIN_FILENO, name, USER_NAME_MAX_LEN);
-    //strncpy(ptrain->buf, name, strlen(name)-1);
+    read(STDIN_FILENO, name, USER_NAME_MAX_LEN);
+    strncpy(ptrain->buf, name, strlen(name)-1);
     
     //test code
+#if 0
     strncpy(name, "tt", strlen("tt"));
     puts(name);
     strncpy(ptrain->buf, name, strlen(name));
+#endif
 
     ptrain->length = strlen(ptrain->buf);
     //puts(ptrain->buf);
@@ -39,6 +41,7 @@ int clientLogin(int sockfd) {
 
     //将服务端收来的salt生成密文再发送(防止抓包)
     char* Password = getpass("Please input password：\n");
+    bzero(&train, sizeof(train));
     strncpy(train.buf, Password, strlen(Password));
 
     char *encryptPassword = crypt(train.buf, salt);
