@@ -103,7 +103,6 @@ int serverTransfile(int netfd, ThreadPool *threadpool, char *userName) {
             else{
                 train.length = statbuf.st_size - clientSize;
             }
-            //support breakpoint resume
             send(netfd,&train.length,sizeof(int),MSG_NOSIGNAL);
             send(netfd,p+clientSize,train.length,MSG_NOSIGNAL);
             clientSize += train.length;
@@ -112,7 +111,6 @@ int serverTransfile(int netfd, ThreadPool *threadpool, char *userName) {
         //send(netfd,&train.length,sizeof(int),MSG_NOSIGNAL);
         munmap(p,statbuf.st_size);
     } else {
-        //support breakpoint resume
         lseek(fd, clientSize, SEEK_SET);
         sendfile(netfd,fd,NULL,statbuf.st_size - clientSize);
     }

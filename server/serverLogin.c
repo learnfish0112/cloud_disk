@@ -1,6 +1,7 @@
 #include "head.h"
 
 #define SALT_STR_LEN 1000
+
 void get_salt(char* salt, char* password){
     int i, j;
     for(i = 0,j = 0; password[i] && j != 3;++i)
