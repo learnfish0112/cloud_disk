@@ -1,4 +1,5 @@
 #include "head.h"
+#include "stringHandle.h"
 
 static int serverCheckUserDirLegal(char *userPath) {
     int i = 0;
@@ -48,58 +49,62 @@ int serverCd(int netfd, ThreadPool *threadpool, char *userName) {
 
     //recv client arg
     Train train;
-    char path[USER_VIRTUAL_DIR_PATH_MAX_LEN] = {"\0"};
+    char unhandle_path[USER_VIRTUAL_DIR_PATH_MAX_LEN] = {"\0"};
+    char after_handle_path[USER_VIRTUAL_DIR_PATH_MAX_LEN] = {"\0"};
     recv(netfd, &train.length, sizeof(int), 0);
-    recv(netfd, path, train.length, 0);
+    recv(netfd, unhandle_path, train.length, 0);
 
     //check arg legally
-    i4Ret = serverCheckUserDirLegal(path); 
+    i4Ret = serverCheckUserDirLegal(unhandle_path);
     if(i4Ret != SERVER_ROK) {
         serverNoteUserChangeDirRes(netfd, false);
         return SERVER_RINVAL_ARG;
     }
 
-    //In our clouddisk, only exist ~, not exist //
+    //In our clouddisk, only exist ~, not exist
     //case1. no arg->change dir to home
     //case2. arg first char is "~"
     //case3. "."
     //case4. ".."
-    //case5. "relative path"
-    if(strlen(path) == 0) {
+    //case5. "relative unhandle_path"
+    if(strlen(unhandle_path) == 0) {
         //case1. pop user dir stack
         printf("case1. no arg\n");
         serverChangeUserDirToHome(threadpool, i);
     } else {
         //case2. arg first char is "~"
-        if(path[0] == '~') {
+        if(unhandle_path[0] == '~') {
             printf("case2. ~\n");
             serverChangeUserDirToHome(threadpool, i);
+            substring(after_handle_path, unhandle_path, 1, strlen(unhandle_path) - 1);
         } else {
-           char *temp_path; 
-           temp_path = strtok(path,"/");
-           while(temp_path != NULL) {
-               if(strlen(temp_path) == 0 || \
-                  (strlen(temp_path) == 1 && temp_path[0] == '.')) {
-                    //case3. "."
-                    //do nothing
-                    printf("case3. one point -> do nothing\n");
-               } else if(strcmp(temp_path, "..") == 0) {
-                    //case4. ".."
-                    //pop Stack, if user in home dir, do nothing
-                    printf("case4. two point -> pop stack dir\n");
-                    stackPop(&threadpool->userArr[i].direcStack);
-               } else {
-                    //case5. "relative path"
-                    //get current path-> concatenate(push)
-                    printf("case5. relative path  -> push stack dir\n");
-                    stackPush(&threadpool->userArr[i].direcStack, temp_path);
-               }
-                
-               temp_path = strtok(NULL,"/");
-           }
+            substring(after_handle_path, unhandle_path, 0, strlen(unhandle_path));
+        }
+
+        char *temp_path;
+        temp_path = strtok(after_handle_path, "/");
+        while(temp_path != NULL) {
+            if(strlen(temp_path) == 0 || \
+               (strlen(temp_path) == 1 && temp_path[0] == '.')) {
+                //case3. "."
+                //do nothing
+                printf("case3. one point -> do nothing\n");
+            } else if(strcmp(temp_path, "..") == 0) {
+                //case4. ".."
+                //pop Stack, if user in home dir, do nothing
+                printf("case4. two point -> pop stack dir\n");
+                stackPop(&threadpool->userArr[i].direcStack);
+            } else {
+                //case5. "relative path"
+                //get current path-> concatenate(push)
+                printf("case5. relative path  -> push stack dir\n");
+                stackPush(&threadpool->userArr[i].direcStack, temp_path);
+            }
+
+            temp_path = strtok(NULL,"/");
         }
     }
-    
+
     serverNoteUserChangeDirRes(netfd, true);
     return SERVER_ROK;
 }
